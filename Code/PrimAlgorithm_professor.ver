@@ -1,0 +1,144 @@
+#include<iostream>
+#include<algorithm>
+#include<vector>
+using namespace std;
+class TRI {//tree
+public:
+	int a, b, w;//weight
+
+};
+class PQ {
+public:
+
+	int n;//size
+	TRI Arr[1000];
+	PQ();
+	TRI Delete();
+	void insert(TRI x);
+	int isEmpty();
+
+};
+PQ::PQ() {
+	n = 0;
+
+}
+int PQ::isEmpty() {
+	return n == 0;
+}
+
+void PQ::insert(TRI x) {
+	int i,temp;
+	Arr[n+1] = x;//0안쓸거임
+	i = n + 1;
+	n = n + 1;
+	while (i > 1 && Arr[i].w < Arr[i / 2].w) {
+		swap(Arr[i], Arr[i / 2]);//오 err안난다
+		i = i / 2;
+
+	}
+
+}
+
+TRI PQ::Delete() {
+	TRI ret = Arr[1];
+	int i,j;
+
+	if (n == 1) {
+		n = 0;
+		return ret;
+	}
+	Arr[1] = Arr[n];
+	i = 1;
+	n = n - 1;
+	while (1) {
+		if (i * 2 > n) {//자식이 없다
+			break;
+		}
+		else if (i * 2 + 1 > n) {//왼쪽 child만 있다
+			if (Arr[i * 2].w < Arr[i].w) {
+				swap(Arr[i * 2], Arr[i]);
+				i = i * 2;
+			}
+			else {
+				break;
+			}
+			
+		}
+		else {//둘다 자식이 있다
+			if (Arr[i].w>Arr[i*2].w&& Arr[i].w > Arr[i * 2+1].w) {
+				if (Arr[i * 2].w < Arr[i * 2 + 1].w)
+					j = i * 2;
+				else
+					j = i * 2 + 1;
+				swap(Arr[i], Arr[j]);
+				i = j;
+			}
+			else if (Arr[i].w > Arr[i * 2].w && Arr[i].w <= Arr[i * 2 + 1].w) {
+				j = i * 2;
+				swap(Arr[i], Arr[j]);
+				i = j;
+			}
+			else if(Arr[i].w <= Arr[i * 2].w && Arr[i].w > Arr[i * 2 + 1].w) {
+				j = i * 2 + 1;
+				swap(Arr[i], Arr[j]);
+				i = j;
+			}
+			else {
+				break;
+			}
+		}
+	}
+	return ret;
+}
+
+PQ Q;
+
+int n,m;//n은 노드의개수 m은 엣지 개수
+vector<pair<int,int>>Edges[1000];
+int M[1000];//노드 마크
+int main() {
+	int c,s,i, a, b ,w;
+	TRI x, y;
+	cin >> n >> m;
+	for (i = 0; i < m; i++) {
+		cin >> a >> b >> w;
+		Edges[a].push_back({ b,w });
+		Edges[b].push_back({ a,w });
+		
+	}
+	c = 1;
+	M[c] = 1;
+	for (i = 0; i < Edges[c].size();i++) {
+		x.a = c;
+		x.b = Edges[c][i].first;
+		x.w = Edges[c][i].second;
+		Q.insert(x);
+		
+	}
+	
+	while (Q.isEmpty() == 0) {
+		
+		y = Q.Delete();
+		if (M[y.a] == 1 && M[y.b] == 1) {//사이클 만드는지 유무성
+			continue;
+		}
+		else {
+			
+			cout << endl;
+			cout << "Edge from Node " << y.a << "to Node " << y.b << "of Weight " << y.w << "is Selected" << endl;
+			c = y.b;
+			M[c] = 1;
+			for (i = 0; i < Edges[c].size(); i++) {
+				x.a = c;
+				x.b = Edges[c][i].first;
+				x.w = Edges[c][i].second;
+				Q.insert(x);
+			}
+		}
+	} 
+
+
+
+
+	return 0;
+}
