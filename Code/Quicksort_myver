@@ -1,0 +1,54 @@
+#include<iostream>
+#include<array>
+using namespace std;
+int arr[300001];
+int N;
+int qsort(int a[],int n) {
+	int d;
+	int p = a[0];
+	int left = 1;
+	int right = n-1;
+	int leftm = 0;
+	int rightm = n-1;
+	//cout << "asdf" << endl;
+	while (1) {
+		while (a[left] < p&&left!=right) {
+			
+			leftm++;
+			left++;
+		}
+		while (a[right] > p && left != right) {
+			right--;
+			rightm--;
+		}
+			
+		if (left == right) {
+			d = left;
+			break;
+		}
+		
+		swap(a[left], a[right]);
+		
+	}
+	if (n==2) {
+		if(a[0]>a[left])
+			swap(a[0], a[left]);
+	}
+	else{
+		swap(a[0], a[leftm]);
+	}
+
+	if (leftm != 0) {
+		qsort(a, leftm);
+	}
+	if (n-rightm != 1) {
+		qsort(a + rightm, n-rightm);
+		
+	}
+		
+	
+	
+	return 0;
+
+
+}
