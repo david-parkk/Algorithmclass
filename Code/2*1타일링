@@ -1,0 +1,33 @@
+#include<iostream>
+using namespace std;
+int arr[1001];
+
+void bottomup() {
+	
+	int temp = 0;
+	for (int i = 5; i < 1001; i++) {
+		
+		arr[i] = (arr[i - 2] + arr[i - 1]) % 10007;
+		
+	}
+}
+
+int topdown(int num) {
+	if (arr[num] > 0)
+		return arr[num];
+	arr[num] = topdown(num - 1) + topdown(num - 2);
+	return arr[num];
+
+}
+int main() {
+	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	arr[1] = 1;
+	arr[2] = 2;
+
+	int num;
+	cin >> num;
+	cout << topdown(num) << "\n";
+
+	return 0;
+}
