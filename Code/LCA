@@ -1,0 +1,140 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<stack>
+#include<string>
+using namespace std;
+vector<int> vec[1002];
+int arrow[1002] = { 0 };
+int num[1002] = { 0 };
+int level[1002] = { 0 };
+int parent[1002] = { 0 };
+int visited[1002] = { 0 };
+queue<int> que;
+void dfs(int num) {
+	if (visited[num] != 0)
+		return;
+	visited[num] = 1;
+	for (int i = 0; i < vec[num].size(); i++) {
+		parent[vec[num][i]] = num;
+		level[vec[num][i]] = level[num] + 1;
+		dfs(vec[num][i]);
+	}
+	return;
+}
+long long howlen(long long num) {
+	int len = 1;
+	int result = 1;
+	while (result<=num) {
+		result *= 10;
+	}
+	return result;
+}
+long long cal(int a, int b) {
+	stack<int>stk;
+	long long result = 0;
+	long long len = 1;
+	long long temp;
+	while (1) {
+		if (level[a] > level[b]) {//도착지가 더 위에 있는 경우
+			len = howlen(result);
+			result = (((result * len) % 1000000007) + num[a]) % 1000000007;
+			a = parent[a];
+			
+
+		}
+		else if (level[a] < level[b]) {
+			stk.push(num[b]);
+			b = parent[b];
+
+		}
+		else if (level[a] == level[b]) {
+			break;
+		}
+	}
+	while (1) {
+		if (a == b) {
+			stk.push(num[b]);
+			break;
+		}
+		else {
+			len = howlen(result);
+			result = (((result * len) % 1000000007) + num[a]) % 1000000007;
+			a = parent[a];
+			len = howlen(result);
+			stk.push(num[b]);
+			b = parent[b];
+		}
+	}
+	
+	while (!stk.empty()) {
+		temp = stk.top();
+		stk.pop();
+		len = howlen(temp);
+		result = (((result * len) % 1000000007) + temp) % 1000000007;
+
+	}
+	return result;
+}
+int main() {
+	cin.tie(NULL);
+	ios::sync_with_stdio(false);
+
+	int N, Q;
+	cin >> N >> Q;
+	for (int i = 1; i <= N; i++) {
+		cin >> num[i];
+	}
+	int temp1, temp2;
+	for (int i = 1; i <= N - 1; i++) {
+		cin >> temp1 >> temp2;
+		vec[temp1].push_back(temp2);
+		vec[temp2].push_back(temp1);
+		arrow[temp2]++;
+		arrow[temp1]++;
+		//parent[temp2] = temp1;
+	}
+	int root = 0;
+	for (int i = 1; i <= N; i++) {
+		if (arrow[i] == 1) {
+			root = i;
+			break;
+		}
+	}
+	cout << "root: "<<root<<endl;
+	level[root] = 1;
+	dfs(root);
+	cout << "asdf";
+	//cout << "root: " << root;
+	/*
+	que.push(root);
+	int quetop;
+	while (!que.empty()) {
+		quetop = que.front();
+		que.pop();
+		for (int i = 0; i < vec[quetop].size(); i++) {
+			que.push(vec[quetop][i]);
+			level[vec[quetop][i]] = level[quetop] + 1;
+		}
+	}
+	*/
+	
+	cout << "level: ";
+	for (int i = 1; i <= N; i++) {
+		cout << level[i]<<" ";
+	}
+	cout << endl << endl;
+	cout << "num: ";
+	for (int i = 1; i <= N; i++) {
+		cout << num[i] << " ";
+	}
+	cout << endl << endl;
+	
+	cout << "asdf";
+	for (int i = 1; i <= Q; i++) {
+		cin >> temp1 >> temp2;
+		cout<<cal(temp1, temp2)<<"\n";
+	}
+	
+	return 0;
+}
